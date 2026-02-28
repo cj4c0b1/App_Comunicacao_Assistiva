@@ -1,0 +1,8 @@
+{
+  "project_name": "App Comunicacao",
+  "version": "1.0.0",
+  "platforms": ["iOS", "Android", "Tablet_Universal"],
+  "accessibility_level": "AAA",
+  "default_language": "pt-BR",
+  "supported_languages": ["pt-BR", "de-DE", "fr-FR", "en-US"]
+}

@@ -1,0 +1,10 @@
+<view type="grid" columns="2" padding="20">
+    <button id="help" background="#FF0000" onClick="AppCore.onButtonClick('help', currentLang)">
+        <icon src="panic.svg" size="100"/>
+        <text value="AJUDA / HELP" color="#FFFFFF"/>
+    </button>
+    <button id="sleep" background="#FFB900" onClick="AppCore.onButtonClick('sleep', currentLang)">
+        <icon src="sleep.svg" size="100"/>
+        <text value="DORMIR / SLEEP" color="#000000"/>
+    </button>
+    </view>
