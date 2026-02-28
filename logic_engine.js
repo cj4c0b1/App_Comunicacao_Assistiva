@@ -13,6 +13,8 @@ const AppCore = {
     'bathroom':  { icon: '🚻', pt: 'Preciso ir ao banheiro.', en: 'I need the bathroom.', de: 'Ich muss zur Toilette.', fr: 'Je dois aller aux toilettes.' },
     'cold':      { icon: '🥶', pt: 'Estou com frio.',       en: 'I am cold.',          de: 'Mir ist kalt.',           fr: "J'ai froid." },
     'hot':       { icon: '🥵', pt: 'Estou com calor.',      en: 'I am hot.',           de: 'Mir ist heiß.',           fr: "J'ai chaud." },
+    'tv':        { icon: '📺', pt: 'Quero ver TV.',         en: 'I want to watch TV.', de: 'Ich möchte fernsehen.',    fr: 'Je veux regarder la TV.' },
+    'radio':     { icon: '📻', pt: 'Quero ouvir rádio.',    en: 'I want to hear radio.', de: 'Ich möchte Radio hören.', fr: 'Je veux écouter la radio.' },
     'help':      { icon: '🆘', pt: 'Preciso de ajuda!',     en: 'I need help!',        de: 'Ich brauche Hilfe!',     fr: "J'ai besoin d'aide!" },
   },
 
