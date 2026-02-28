@@ -3,39 +3,49 @@
  */
 window.System = {
     Voice: {
-        speak: (text, options) => {
+        speak: async (text, options) => {
             console.log(`[Voice] Speaking: "${text}"`, options);
             
-            // Cancela qualquer fala anterior
+            const lang = window.currentLang || 'pt-BR';
+            
+            // Tenta usar o Plugin Nativo do Capacitor se estiver disponível
+            if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TextToSpeech) {
+                try {
+                    console.log("[Voice] Usando Plugin Nativo Capacitor");
+                    await window.Capacitor.Plugins.TextToSpeech.speak({
+                        text: text,
+                        lang: lang,
+                        rate: options.rate || 1.0,
+                        pitch: options.pitch || 1.0,
+                        volume: 1.0,
+                        category: 'ambient'
+                    });
+                    return;
+                } catch (e) {
+                    console.error("[Voice] Erro no plugin nativo, tentando fallback web:", e);
+                }
+            }
+
+            // Fallback: Web Speech API (Navegador)
             window.speechSynthesis.cancel();
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.rate = options.rate || 1.0;
             utterance.pitch = options.pitch || 1.0;
+            utterance.lang = lang;
 
-            // Define o idioma correto para pronúncia nativa
-            utterance.lang = window.currentLang || 'pt-BR';
-
-            // Tenta encontrar a melhor voz nativa disponível
             const voices = window.speechSynthesis.getVoices();
-            const lang = utterance.lang;
-            // Prioriza vozes que correspondem exatamente ao locale (ex: pt-BR)
             let bestVoice = voices.find(v => v.lang === lang);
-            // Fallback: qualquer voz do mesmo idioma base (ex: pt)
             if (!bestVoice) {
                 const baseLang = lang.split('-')[0];
                 bestVoice = voices.find(v => v.lang.startsWith(baseLang));
             }
-            if (bestVoice) {
-                utterance.voice = bestVoice;
-                console.log(`[Voice] Usando voz: ${bestVoice.name} (${bestVoice.lang})`);
-            }
+            if (bestVoice) utterance.voice = bestVoice;
 
             window.speechSynthesis.speak(utterance);
             
-            // Log visual no simulador
             const log = document.getElementById('system-log');
-            if (log) log.innerHTML += `<div><b>Voz (${utterance.lang}):</b> ${text}</div>`;
+            if (log) log.innerHTML += `<div><b>Voz (${lang}):</b> ${text}</div>`;
         }
     },
     Video: {
