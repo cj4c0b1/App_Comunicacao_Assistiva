@@ -199,64 +199,64 @@
 
     <div class="app-layout">
         <div class="interaction-area">
-            <button class="btn-assistive bg-yellow" onclick="AppCore.onButtonClick('happy', window.currentLang)">
+            <button class="btn-assistive bg-yellow" data-id="happy" onclick="AppCore.onButtonClick('happy', window.currentLang)">
                 <span class="icon">😊</span>
                 <span class="label-pt">Alegria</span>
                 <span class="label-en">Joy</span>
             </button>
-            <button class="btn-assistive bg-blue" onclick="AppCore.onButtonClick('sleep', window.currentLang)">
+            <button class="btn-assistive bg-blue" data-id="sleep" onclick="AppCore.onButtonClick('sleep', window.currentLang)">
                 <span class="icon">💤</span>
                 <span class="label-pt">Dormir</span>
                 <span class="label-en">Sleep</span>
             </button>
-            <button class="btn-assistive bg-green" onclick="AppCore.onButtonClick('walk', window.currentLang)">
+            <button class="btn-assistive bg-green" data-id="walk" onclick="AppCore.onButtonClick('walk', window.currentLang)">
                 <span class="icon">🚶</span>
                 <span class="label-pt">Caminhar</span>
                 <span class="label-en">Walk</span>
             </button>
-            <button class="btn-assistive bg-teal" onclick="AppCore.onButtonClick('tv', window.currentLang)">
+            <button class="btn-assistive bg-teal" data-id="tv" onclick="AppCore.onButtonClick('tv', window.currentLang)">
                 <span class="icon">📺</span>
                 <span class="label-pt">Ver TV</span>
                 <span class="label-en">Watch TV</span>
             </button>
             <!-- Row 2 -->
-            <button class="btn-assistive bg-purple" onclick="AppCore.onButtonClick('radio', window.currentLang)">
+            <button class="btn-assistive bg-purple" data-id="radio" onclick="AppCore.onButtonClick('radio', window.currentLang)">
                 <span class="icon">📻</span>
                 <span class="label-pt">Rádio</span>
                 <span class="label-en">Radio</span>
             </button>
-            <button class="btn-assistive bg-green" onclick="AppCore.onButtonClick('hungry', window.currentLang)">
+            <button class="btn-assistive bg-green" data-id="hungry" onclick="AppCore.onButtonClick('hungry', window.currentLang)">
                 <span class="icon">🍽️</span>
                 <span class="label-pt">Fome</span>
                 <span class="label-en">Hungry</span>
             </button>
-            <button class="btn-assistive bg-teal" onclick="AppCore.onButtonClick('thirsty', window.currentLang)">
+            <button class="btn-assistive bg-teal" data-id="thirsty" onclick="AppCore.onButtonClick('thirsty', window.currentLang)">
                 <span class="icon">💧</span>
                 <span class="label-pt">Sede</span>
                 <span class="label-en">Thirsty</span>
             </button>
-            <button class="btn-assistive bg-red" onclick="AppCore.onButtonClick('pain', window.currentLang)">
+            <button class="btn-assistive bg-red" data-id="pain" onclick="AppCore.onButtonClick('pain', window.currentLang)">
                 <span class="icon">🤕</span>
                 <span class="label-pt">Dor</span>
                 <span class="label-en">Pain</span>
             </button>
             <!-- Row 3 -->
-            <button class="btn-assistive bg-blue" onclick="AppCore.onButtonClick('bathroom', window.currentLang)">
+            <button class="btn-assistive bg-blue" data-id="bathroom" onclick="AppCore.onButtonClick('bathroom', window.currentLang)">
                 <span class="icon">🚻</span>
                 <span class="label-pt">Banheiro</span>
                 <span class="label-en">Bathroom</span>
             </button>
-            <button class="btn-assistive bg-purple" onclick="AppCore.onButtonClick('cold', window.currentLang)">
+            <button class="btn-assistive bg-purple" data-id="cold" onclick="AppCore.onButtonClick('cold', window.currentLang)">
                 <span class="icon">🥶</span>
                 <span class="label-pt">Frio</span>
                 <span class="label-en">Cold</span>
             </button>
-            <button class="btn-assistive bg-yellow" onclick="AppCore.onButtonClick('hot', window.currentLang)">
+            <button class="btn-assistive bg-yellow" data-id="hot" onclick="AppCore.onButtonClick('hot', window.currentLang)">
                 <span class="icon">🥵</span>
                 <span class="label-pt">Calor</span>
                 <span class="label-en">Hot</span>
             </button>
-            <button class="btn-assistive bg-red btn-help" onclick="AppCore.onButtonClick('help', window.currentLang)">
+            <button class="btn-assistive bg-red btn-help" data-id="help" onclick="AppCore.onButtonClick('help', window.currentLang)">
                 <span class="icon">🆘</span>
                 <span class="label-pt">Ajuda</span>
                 <span class="label-en">Help</span>
@@ -265,6 +265,19 @@
 
         <!-- Sidebar (Hidden by default) -->
         <div class="sidebar" id="dev-sidebar">
+            <div class="panel">
+                <h3>Acessibilidade</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="touch-mode" value="default" checked onchange="AppCore.updateConfig('interactionMode', this.value)">
+                        Padrão (Toque Único)
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="radio" name="touch-mode" value="slide" onchange="AppCore.updateConfig('interactionMode', this.value)">
+                        Deslizar p/ Falar/Ativar
+                    </label>
+                </div>
+            </div>
             <div class="panel">
                 <h3>Arquitetura</h3>
                 <img src="https://mermaid.ink/img/pako:eNqNkk9v2zAMxb_KwfMeOnR5D7XdBgyD7U6O6A4C62B0XhKtlhVIsSNH6XvPe_G2W9eUf5RIn0Q-vke9kY5IqK0hMnoRz0mowW8qJ603_S2N67u7yvW4K8j9-6_v9PnhK70_mH4zY67NnO6I7L6UvY95G_L-m6_N8mCenp6m7-vU_86P8_Vf6I1-W_mCididYv8H_EBeWye6lC_0b_p6yV_p_4M_v-pPn_Un_fn88tN_uFvY9w" style="width:100%; border-radius:4px;">

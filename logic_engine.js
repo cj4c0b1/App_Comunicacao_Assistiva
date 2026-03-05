@@ -1,5 +1,16 @@
 // Motor de Execução Bimodal — App Comunicação Assistiva
 const AppCore = {
+  // Configurações e Estado
+  config: {
+    interactionMode: 'default', // 'default' ou 'slide'
+    repetitionDelay: 3000,      // Tempo para evitar repetição (ms)
+  },
+  state: {
+    lastActiveId: null,      // Último botão ativado
+    lastActiveTime: 0,       // Timestamp da última ativação
+    isDragging: false        // Se o usuário está com o dedo na tela
+  },
+
   // Banco de Dados de Comandos (expandido)
   commands: {
     'happy':     { icon: '😊', pt: 'Estou feliz!',         en: 'I am happy!',        de: 'Ich bin froh!',           fr: 'Je suis content!' },
@@ -18,12 +29,93 @@ const AppCore = {
     'help':      { icon: '🆘', pt: 'Preciso de ajuda!',     en: 'I need help!',        de: 'Ich brauche Hilfe!',     fr: "J'ai besoin d'aide!" },
   },
 
-  // Função disparada ao clicar na tela do Tablet
+  init: () => {
+    AppCore.loadSettings();
+    AppCore.setupEventListeners();
+  },
+
+  loadSettings: () => {
+    const saved = localStorage.getItem('RenatoApp_Config');
+    if (saved) {
+      AppCore.config = { ...AppCore.config, ...JSON.parse(saved) };
+      // Atualizar UI do checkbox se necessário
+      const radio = document.querySelector(`input[name="touch-mode"][value="${AppCore.config.interactionMode}"]`);
+      if (radio) radio.checked = true;
+    }
+  },
+
+  saveSettings: () => {
+    localStorage.setItem('RenatoApp_Config', JSON.stringify(AppCore.config));
+  },
+
+  updateConfig: (key, value) => {
+    AppCore.config[key] = value;
+    AppCore.saveSettings();
+    console.log(`[Config] ${key} atualizado para: ${value}`);
+  },
+
+  setupEventListeners: () => {
+    // Escuta eventos de ponteiro para o modo deslizar
+    document.addEventListener('pointerdown', (e) => {
+      AppCore.state.isDragging = true;
+      AppCore.handlePointer(e);
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (AppCore.state.isDragging) {
+        AppCore.handlePointer(e);
+      }
+    });
+
+    document.addEventListener('pointerup', () => {
+      AppCore.state.isDragging = false;
+      AppCore.state.lastActiveId = null; // Reseta para permitir re-ativação ao tocar novamente
+    });
+  },
+
+  handlePointer: (e) => {
+    if (AppCore.config.interactionMode !== 'slide') return;
+
+    const element = document.elementFromPoint(e.clientX, e.clientY);
+    const button = element?.closest('.btn-assistive');
+    
+    if (button) {
+      const id = button.getAttribute('data-id');
+      AppCore.activateButton(id, window.currentLang, true);
+    }
+  },
+
+  // Função disparada ao clicar na tela do Tablet (Modo Padrão)
   onButtonClick: (id, lang) => {
-    // Normaliza o idioma para 2 letras (ex: 'pt-BR' -> 'pt')
+    if (AppCore.config.interactionMode === 'default') {
+      AppCore.activateButton(id, lang, false);
+    }
+  },
+
+  activateButton: (id, lang, isAuto = false) => {
+    const now = Date.now();
+    
+    // Lógica de Prevenção de Repetição
+    if (id === AppCore.state.lastActiveId) {
+      if (now - AppCore.state.lastActiveTime < AppCore.config.repetitionDelay) {
+        return; // Ignora se for o mesmo botão e dentro do cooldown
+      }
+    }
+
     const shortLang = lang.split("-")[0];
     const cmd = AppCore.commands[id];
     if (!cmd) return;
+
+    // Atualiza estado
+    AppCore.state.lastActiveId = id;
+    AppCore.state.lastActiveTime = now;
+
+    // Feedback visual temporário (escala)
+    const btn = document.querySelector(`.btn-assistive[data-id="${id}"]`);
+    if (btn) {
+      btn.style.transform = 'scale(1.1)';
+      setTimeout(() => btn.style.transform = '', 300);
+    }
 
     // 1. Executa Voz (Text-to-Speech)
     System.Voice.speak(cmd[shortLang], { rate: 0.8, pitch: 1.0 });
@@ -33,6 +125,7 @@ const AppCore = {
 
     // 3. Lógica de Emergência (GPS + WhatsApp)
     if (id === "help") {
+      System.Voice.speak("ALERTA DE EMERGÊNCIA ENVIADO", { rate: 1.0 });
       System.GPS.getCoords((lat, lon) => {
         System.SMS.send(
           "CONTATO_EMERGENCIA",
@@ -40,5 +133,11 @@ const AppCore = {
         );
       });
     }
+
+    const log = document.getElementById('system-log');
+    if (log) log.innerHTML += `<div>[${isAuto ? 'Slide' : 'Click'}] Ativado: ${id}</div>`;
   },
 };
+
+// Inicializa o núcleo
+AppCore.init();
