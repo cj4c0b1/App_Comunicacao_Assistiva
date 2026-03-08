@@ -1,296 +1,458 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>App Comunicação Assistiva</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --bg-warm: #F5E6D3;
-            --bg-warm-light: #FFF3E8;
-            --panel-bg: #1a1a2e;
-            --panel-text: #e0e0e0;
-            --text-dark: #2d2d2d;
-            --shadow: rgba(0,0,0,0.15);
-            --radius: 18px;
-            --orange: #FF9800;
+      :root {
+        --bg-warm: #f5e6d3;
+        --bg-warm-light: #fff3e8;
+        --panel-bg: #1a1a2e;
+        --panel-text: #e0e0e0;
+        --text-dark: #2d2d2d;
+        --shadow: rgba(0, 0, 0, 0.15);
+        --radius: 18px;
+        --orange: #ff9800;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        background: linear-gradient(
+          135deg,
+          var(--bg-warm) 0%,
+          var(--bg-warm-light) 100%
+        );
+        color: var(--text-dark);
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      /* ── Header ── */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 24px;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(8px);
+        z-index: 10;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+      header h1 span {
+        color: var(--orange);
+      }
+
+      /* ── Language Flags ── */
+      .flags {
+        display: flex;
+        gap: 10px;
+      }
+
+      .flag-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        cursor: pointer;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        box-shadow: 0 2px 6px var(--shadow);
+        transition: all 0.2s;
+      }
+      .flag-btn.active {
+        border-color: var(--orange);
+      }
+
+      /* ── Main Layout ── */
+      .app-layout {
+        flex: 1;
+        display: flex;
+        position: relative;
+        padding: 1rem;
+        overflow: hidden;
+      }
+
+      /* ── Communication Grid ── */
+      .interaction-area {
+        flex: 1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 12px;
+        z-index: 1;
+      }
+
+      .btn-assistive {
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 10px;
+        transition:
+          transform 0.1s,
+          box-shadow 0.2s;
+        box-shadow: 0 4px 10px var(--shadow);
+        color: white;
+        text-align: center;
+      }
+
+      .btn-assistive:active {
+        transform: scale(0.94);
+      }
+      .btn-assistive .icon {
+        font-size: 3.5rem;
+        line-height: 1;
+      }
+      .btn-assistive .label-pt {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .btn-assistive .label-en {
+        font-size: 10px;
+        font-weight: 400;
+        opacity: 0.8;
+      }
+
+      /* Cores */
+      .bg-yellow {
+        background: #f5c518;
+        color: #333;
+      }
+      .bg-blue {
+        background: #2196f3;
+      }
+      .bg-green {
+        background: #4caf50;
+      }
+      .bg-teal {
+        background: #00897b;
+      }
+      .bg-purple {
+        background: #7e57c2;
+      }
+      .bg-red {
+        background: #e53935;
+      }
+
+      /* Help Pulse */
+      @keyframes pulse-red {
+        0%,
+        100% {
+          box-shadow: 0 4px 10px var(--shadow);
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background: linear-gradient(135deg, var(--bg-warm) 0%, var(--bg-warm-light) 100%);
-            color: var(--text-dark);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        50% {
+          box-shadow: 0 0 20px rgba(229, 57, 53, 0.7);
         }
+      }
+      .btn-help {
+        animation: pulse-red 2s infinite;
+        background: #e53935;
+      }
 
-        /* ── Header ── */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 24px;
-            background: rgba(255,255,255,0.4);
-            backdrop-filter: blur(8px);
-            z-index: 10;
-        }
+      /* ── Floating Sidebar (Collapsible) ── */
+      .sidebar {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        width: 320px;
+        background: white;
+        border-radius: 24px;
+        box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+        transform: translateX(120%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+      }
 
-        header h1 {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-        header h1 span { color: var(--orange); }
+      .sidebar.active {
+        transform: translateX(0);
+      }
 
-        /* ── Language Flags ── */
-        .flags {
-            display: flex;
-            gap: 10px;
-        }
+      .panel {
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 12px;
+      }
+      .panel h3 {
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 8px;
+      }
 
-        .flag-btn {
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            font-size: 24px;
-            display: flex; align-items: center; justify-content: center;
-            background: white;
-            box-shadow: 0 2px 6px var(--shadow);
-            transition: all 0.2s;
-        }
-        .flag-btn.active { border-color: var(--orange); }
+      #video-simulator {
+        width: 100%;
+        height: 100px;
+        background: #000;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #444;
+        font-size: 12px;
+        font-style: italic;
+      }
 
-        /* ── Main Layout ── */
-        .app-layout {
-            flex: 1;
-            display: flex;
-            position: relative;
-            padding: 1rem;
-            overflow: hidden;
-        }
+      #system-log {
+        background: #0d0d1a;
+        color: #0f0;
+        font-family: "Courier New", monospace;
+        font-size: 10px;
+        padding: 8px;
+        border-radius: 6px;
+        height: 140px;
+        overflow-y: auto;
+      }
 
-        /* ── Communication Grid ── */
+      /* ── Toggle Button ── */
+      .btn-debug {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px var(--shadow);
+        z-index: 1000;
+        border: 2px solid #eee;
+        opacity: 0.6;
+        transition: all 0.2s;
+      }
+      .btn-debug:hover {
+        opacity: 1;
+        transform: rotate(45deg);
+      }
+
+      /* Responsividade Mobile */
+      @media (max-width: 768px) {
         .interaction-area {
-            flex: 1;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
-            z-index: 1;
+          grid-template-columns: repeat(2, 1fr);
+          grid-template-rows: repeat(6, 1fr);
         }
-
-        .btn-assistive {
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            padding: 10px;
-            transition: transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 10px var(--shadow);
-            color: white;
-            text-align: center;
+        header h1 {
+          font-size: 1.1rem;
         }
-
-        .btn-assistive:active { transform: scale(0.94); }
-        .btn-assistive .icon { font-size: 3.5rem; line-height: 1; }
-        .btn-assistive .label-pt { font-size: 13px; font-weight: 700; text-transform: uppercase; }
-        .btn-assistive .label-en { font-size: 10px; font-weight: 400; opacity: 0.8; }
-
-        /* Cores */
-        .bg-yellow { background: #F5C518; color: #333; }
-        .bg-blue   { background: #2196F3; }
-        .bg-green  { background: #4CAF50; }
-        .bg-teal   { background: #00897B; }
-        .bg-purple { background: #7E57C2; }
-        .bg-red    { background: #E53935; }
-
-        /* Help Pulse */
-        @keyframes pulse-red {
-            0%, 100% { box-shadow: 0 4px 10px var(--shadow); }
-            50% { box-shadow: 0 0 20px rgba(229,57,53,0.7); }
+        .btn-assistive .icon {
+          font-size: 2.5rem;
         }
-        .btn-help { animation: pulse-red 2s infinite; background: #e53935; }
-
-        /* ── Floating Sidebar (Collapsible) ── */
-        .sidebar {
-            position: absolute;
-            top: 1rem; right: 1rem; bottom: 1rem;
-            width: 320px;
-            background: white;
-            border-radius: 24px;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.2);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            padding: 20px;
-            transform: translateX(120%);
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            overflow-y: auto;
-        }
-
-        .sidebar.active { transform: translateX(0); }
-
-        .panel { background: #f8f9fa; padding: 12px; border-radius: 12px; }
-        .panel h3 { font-size: 11px; text-transform: uppercase; color: #888; margin-bottom: 8px; }
-
-        #video-simulator {
-            width: 100%; height: 100px;
-            background: #000; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            color: #444; font-size: 12px; font-style: italic;
-        }
-
-        #system-log {
-            background: #0d0d1a; color: #0f0;
-            font-family: 'Courier New', monospace; font-size: 10px;
-            padding: 8px; border-radius: 6px; height: 140px; overflow-y: auto;
-        }
-
-        /* ── Toggle Button ── */
-        .btn-debug {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            width: 50px; height: 50px;
-            background: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px var(--shadow);
-            z-index: 1000;
-            border: 2px solid #eee;
-            opacity: 0.6;
-            transition: all 0.2s;
-        }
-        .btn-debug:hover { opacity: 1; transform: rotate(45deg); }
-
-        /* Responsividade Mobile */
-        @media (max-width: 768px) {
-            .interaction-area { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(6, 1fr); }
-            header h1 { font-size: 1.1rem; }
-            .btn-assistive .icon { font-size: 2.5rem; }
-        }
+      }
     </style>
-</head>
-<body>
-
+  </head>
+  <body>
     <header>
-        <h1>App <span>COMUNICAÇÃO</span></h1>
-        <div class="flags">
-            <button class="flag-btn active" onclick="switchLang('pt-BR', this)">🇧🇷</button>
-            <button class="flag-btn" onclick="switchLang('en-US', this)">🇺🇸</button>
-            <button class="flag-btn" onclick="switchLang('de-DE', this)">🇩🇪</button>
-            <button class="flag-btn" onclick="switchLang('fr-FR', this)">🇫🇷</button>
-        </div>
+      <h1>App <span>COMUNICAÇÃO</span></h1>
+      <div class="flags">
+        <button class="flag-btn active" onclick="switchLang('pt-BR', this)">
+          🇧🇷
+        </button>
+        <button class="flag-btn" onclick="switchLang('en-US', this)">🇺🇸</button>
+        <button class="flag-btn" onclick="switchLang('de-DE', this)">🇩🇪</button>
+        <button class="flag-btn" onclick="switchLang('fr-FR', this)">🇫🇷</button>
+      </div>
     </header>
 
     <div class="app-layout">
-        <div class="interaction-area">
-            <button class="btn-assistive bg-yellow" data-id="happy" onclick="AppCore.onButtonClick('happy', window.currentLang)">
-                <span class="icon">😊</span>
-                <span class="label-pt">Alegria</span>
-                <span class="label-en">Joy</span>
-            </button>
-            <button class="btn-assistive bg-blue" data-id="sleep" onclick="AppCore.onButtonClick('sleep', window.currentLang)">
-                <span class="icon">💤</span>
-                <span class="label-pt">Dormir</span>
-                <span class="label-en">Sleep</span>
-            </button>
-            <button class="btn-assistive bg-green" data-id="walk" onclick="AppCore.onButtonClick('walk', window.currentLang)">
-                <span class="icon">🚶</span>
-                <span class="label-pt">Caminhar</span>
-                <span class="label-en">Walk</span>
-            </button>
-            <button class="btn-assistive bg-teal" data-id="tv" onclick="AppCore.onButtonClick('tv', window.currentLang)">
-                <span class="icon">📺</span>
-                <span class="label-pt">Ver TV</span>
-                <span class="label-en">Watch TV</span>
-            </button>
-            <!-- Row 2 -->
-            <button class="btn-assistive bg-purple" data-id="radio" onclick="AppCore.onButtonClick('radio', window.currentLang)">
-                <span class="icon">📻</span>
-                <span class="label-pt">Rádio</span>
-                <span class="label-en">Radio</span>
-            </button>
-            <button class="btn-assistive bg-green" data-id="hungry" onclick="AppCore.onButtonClick('hungry', window.currentLang)">
-                <span class="icon">🍽️</span>
-                <span class="label-pt">Fome</span>
-                <span class="label-en">Hungry</span>
-            </button>
-            <button class="btn-assistive bg-teal" data-id="thirsty" onclick="AppCore.onButtonClick('thirsty', window.currentLang)">
-                <span class="icon">💧</span>
-                <span class="label-pt">Sede</span>
-                <span class="label-en">Thirsty</span>
-            </button>
-            <button class="btn-assistive bg-red" data-id="pain" onclick="AppCore.onButtonClick('pain', window.currentLang)">
-                <span class="icon">🤕</span>
-                <span class="label-pt">Dor</span>
-                <span class="label-en">Pain</span>
-            </button>
-            <!-- Row 3 -->
-            <button class="btn-assistive bg-blue" data-id="bathroom" onclick="AppCore.onButtonClick('bathroom', window.currentLang)">
-                <span class="icon">🚻</span>
-                <span class="label-pt">Banheiro</span>
-                <span class="label-en">Bathroom</span>
-            </button>
-            <button class="btn-assistive bg-purple" data-id="cold" onclick="AppCore.onButtonClick('cold', window.currentLang)">
-                <span class="icon">🥶</span>
-                <span class="label-pt">Frio</span>
-                <span class="label-en">Cold</span>
-            </button>
-            <button class="btn-assistive bg-yellow" data-id="hot" onclick="AppCore.onButtonClick('hot', window.currentLang)">
-                <span class="icon">🥵</span>
-                <span class="label-pt">Calor</span>
-                <span class="label-en">Hot</span>
-            </button>
-            <button class="btn-assistive bg-red btn-help" data-id="help" onclick="AppCore.onButtonClick('help', window.currentLang)">
-                <span class="icon">🆘</span>
-                <span class="label-pt">Ajuda</span>
-                <span class="label-en">Help</span>
-            </button>
-        </div>
+      <div class="interaction-area">
+        <button
+          class="btn-assistive bg-yellow"
+          data-id="happy"
+          onclick="AppCore.onButtonClick('happy', window.currentLang)"
+        >
+          <span class="icon">😊</span>
+          <span class="label-pt">Alegria</span>
+          <span class="label-en">Joy</span>
+        </button>
+        <button
+          class="btn-assistive bg-blue"
+          data-id="sleep"
+          onclick="AppCore.onButtonClick('sleep', window.currentLang)"
+        >
+          <span class="icon">💤</span>
+          <span class="label-pt">Dormir</span>
+          <span class="label-en">Sleep</span>
+        </button>
+        <button
+          class="btn-assistive bg-green"
+          data-id="walk"
+          onclick="AppCore.onButtonClick('walk', window.currentLang)"
+        >
+          <span class="icon">🚶</span>
+          <span class="label-pt">Caminhar</span>
+          <span class="label-en">Walk</span>
+        </button>
+        <button
+          class="btn-assistive bg-teal"
+          data-id="tv"
+          onclick="AppCore.onButtonClick('tv', window.currentLang)"
+        >
+          <span class="icon">📺</span>
+          <span class="label-pt">Ver TV</span>
+          <span class="label-en">Watch TV</span>
+        </button>
+        <!-- Row 2 -->
+        <button
+          class="btn-assistive bg-purple"
+          data-id="radio"
+          onclick="AppCore.onButtonClick('radio', window.currentLang)"
+        >
+          <span class="icon">📻</span>
+          <span class="label-pt">Rádio</span>
+          <span class="label-en">Radio</span>
+        </button>
+        <button
+          class="btn-assistive bg-green"
+          data-id="hungry"
+          onclick="AppCore.onButtonClick('hungry', window.currentLang)"
+        >
+          <span class="icon">🍽️</span>
+          <span class="label-pt">Fome</span>
+          <span class="label-en">Hungry</span>
+        </button>
+        <button
+          class="btn-assistive bg-teal"
+          data-id="thirsty"
+          onclick="AppCore.onButtonClick('thirsty', window.currentLang)"
+        >
+          <span class="icon">💧</span>
+          <span class="label-pt">Sede</span>
+          <span class="label-en">Thirsty</span>
+        </button>
+        <button
+          class="btn-assistive bg-red"
+          data-id="pain"
+          onclick="AppCore.onButtonClick('pain', window.currentLang)"
+        >
+          <span class="icon">🤕</span>
+          <span class="label-pt">Dor</span>
+          <span class="label-en">Pain</span>
+        </button>
+        <!-- Row 3 -->
+        <button
+          class="btn-assistive bg-blue"
+          data-id="bathroom"
+          onclick="AppCore.onButtonClick('bathroom', window.currentLang)"
+        >
+          <span class="icon">🚻</span>
+          <span class="label-pt">Banheiro</span>
+          <span class="label-en">Bathroom</span>
+        </button>
+        <button
+          class="btn-assistive bg-purple"
+          data-id="cold"
+          onclick="AppCore.onButtonClick('cold', window.currentLang)"
+        >
+          <span class="icon">🥶</span>
+          <span class="label-pt">Frio</span>
+          <span class="label-en">Cold</span>
+        </button>
+        <button
+          class="btn-assistive bg-yellow"
+          data-id="hot"
+          onclick="AppCore.onButtonClick('hot', window.currentLang)"
+        >
+          <span class="icon">🥵</span>
+          <span class="label-pt">Calor</span>
+          <span class="label-en">Hot</span>
+        </button>
+        <button
+          class="btn-assistive bg-red btn-help"
+          data-id="help"
+          onclick="AppCore.onButtonClick('help', window.currentLang)"
+        >
+          <span class="icon">🆘</span>
+          <span class="label-pt">Ajuda</span>
+          <span class="label-en">Help</span>
+        </button>
+      </div>
 
-        <!-- Sidebar (Hidden by default) -->
-        <div class="sidebar" id="dev-sidebar">
-            <div class="panel">
-                <h3>Acessibilidade</h3>
-                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
-                    <label style="display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="touch-mode" value="default" checked onchange="AppCore.updateConfig('interactionMode', this.value)">
-                        Padrão (Toque Único)
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 8px;">
-                        <input type="radio" name="touch-mode" value="slide" onchange="AppCore.updateConfig('interactionMode', this.value)">
-                        Deslizar p/ Falar/Ativar
-                    </label>
-                </div>
-            </div>
-            <div class="panel">
-                <h3>Arquitetura</h3>
-                <img src="https://mermaid.ink/img/pako:eNqNkk9v2zAMxb_KwfMeOnR5D7XdBgyD7U6O6A4C62B0XhKtlhVIsSNH6XvPe_G2W9eUf5RIn0Q-vke9kY5IqK0hMnoRz0mowW8qJ603_S2N67u7yvW4K8j9-6_v9PnhK70_mH4zY67NnO6I7L6UvY95G_L-m6_N8mCenp6m7-vU_86P8_Vf6I1-W_mCididYv8H_EBeWye6lC_0b_p6yV_p_4M_v-pPn_Un_fn88tN_uFvY9w" style="width:100%; border-radius:4px;">
-            </div>
-            <div class="panel">
-                <h3>Voz e Vídeo</h3>
-                <div id="video-simulator">Avatar Pronto</div>
-            </div>
-            <div class="panel" style="flex:1;">
-                <h3>Logs</h3>
-                <div id="system-log"><div>[Iniciado]</div></div>
-            </div>
+      <!-- Sidebar (Hidden by default) -->
+      <div class="sidebar" id="dev-sidebar">
+        <div class="panel">
+          <h3>Acessibilidade</h3>
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              font-size: 14px;
+            "
+          >
+            <label style="display: flex; align-items: center; gap: 8px">
+              <input
+                type="radio"
+                name="touch-mode"
+                value="default"
+                onchange="AppCore.updateConfig('interactionMode', this.value)"
+              />
+              Padrão (Toque Único)
+            </label>
+            <label style="display: flex; align-items: center; gap: 8px">
+              <input
+                type="radio"
+                name="touch-mode"
+                value="slide"
+                checked
+                onchange="AppCore.updateConfig('interactionMode', this.value)"
+              />
+              Deslizar p/ Falar/Ativar
+            </label>
+          </div>
         </div>
+        <div class="panel">
+          <h3>Arquitetura</h3>
+          <img
+            src="https://mermaid.ink/img/pako:eNqNkk9v2zAMxb_KwfMeOnR5D7XdBgyD7U6O6A4C62B0XhKtlhVIsSNH6XvPe_G2W9eUf5RIn0Q-vke9kY5IqK0hMnoRz0mowW8qJ603_S2N67u7yvW4K8j9-6_v9PnhK70_mH4zY67NnO6I7L6UvY95G_L-m6_N8mCenp6m7-vU_86P8_Vf6I1-W_mCididYv8H_EBeWye6lC_0b_p6yV_p_4M_v-pPn_Un_fn88tN_uFvY9w"
+            style="width: 100%; border-radius: 4px"
+          />
+        </div>
+        <div class="panel">
+          <h3>Voz e Vídeo</h3>
+          <div id="video-simulator">Avatar Pronto</div>
+        </div>
+        <div class="panel" style="flex: 1">
+          <h3>Logs</h3>
+          <div id="system-log"><div>[Iniciado]</div></div>
+        </div>
+      </div>
     </div>
 
     <button class="btn-debug" onclick="toggleSidebar()">⚙️</button>
@@ -298,17 +460,19 @@
     <script src="simulator.js"></script>
     <script src="logic_engine.js"></script>
     <script>
-        window.currentLang = 'pt-BR';
-        function switchLang(lang, btn) {
-            window.currentLang = lang;
-            document.querySelectorAll('.flag-btn').forEach(f => f.classList.remove('active'));
-            btn.classList.add('active');
-            const log = document.getElementById('system-log');
-            if (log) log.innerHTML += `<div>[Idioma → ${lang}]</div>`;
-        }
-        function toggleSidebar() {
-            document.getElementById('dev-sidebar').classList.toggle('active');
-        }
+      window.currentLang = "pt-BR";
+      function switchLang(lang, btn) {
+        window.currentLang = lang;
+        document
+          .querySelectorAll(".flag-btn")
+          .forEach((f) => f.classList.remove("active"));
+        btn.classList.add("active");
+        const log = document.getElementById("system-log");
+        if (log) log.innerHTML += `<div>[Idioma → ${lang}]</div>`;
+      }
+      function toggleSidebar() {
+        document.getElementById("dev-sidebar").classList.toggle("active");
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -2,7 +2,7 @@
 const AppCore = {
   // Configurações e Estado
   config: {
-    interactionMode: 'default', // 'default' ou 'slide'
+    interactionMode: 'slide',   // 'default' ou 'slide'
     repetitionDelay: 3000,      // Tempo para evitar repetição (ms)
   },
   state: {
